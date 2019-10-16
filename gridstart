@@ -1,0 +1,30 @@
+#!/usr/bin/env rc
+# Initialize a grid connection and all its windows
+
+# This is the directory where all your connections will be mounted
+N = $HOME/n
+
+## Set up environment
+
+# Necessary evil unless you regex plumb messages — TODO
+echo Submit a patch to fix the /n hack, pls
+sudo ln -s $N /n
+
+
+# Connect all services, nuke stale files
+./engridden $N
+
+## Start opening windows
+
+# Chat
+9term -s 'hubchat' &
+
+# Acme
+acme /n/griddisk &
+
+# Browser
+sensible-browser http://wiki.9gridchan.org/message_board
+
+# Page
+page $N/gridroot/lib/musicant.png &
+

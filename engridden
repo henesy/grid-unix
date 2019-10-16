@@ -1,0 +1,57 @@
+#!/usr/bin/env rc
+# Connect to all the grid services
+
+FUSEDIR = ''
+
+switch($#*){
+case 1;
+	FUSEDIR = $1
+case *;
+	echo 'usage:' $0 'n-directory'
+	exit 'usage'
+}
+
+NAMESPACE = `{namespace}
+srvfiles = (registry pubregistry gridwiki wiki gridroot gridram chat gridchat plumb gridplumber griddisk)
+
+# Delete any stale files, TODO — should prompt
+for(f in $srvfiles){
+	nf = $NAMESPACE/$f
+	ff = $FUSEDIR/$f
+
+	# Delete stale srv files
+	if(test -e $nf)
+		rm $nf
+
+	# Unmount fuse mounts
+	if(test -e $ff)
+		fusermount -zu $ff
+}
+
+# Plumber hack
+plumber
+rm $NAMESPACE/plumb
+
+# Connect all the services
+srv tcp!107.191.50.176!6675 registry
+#srv tcp!45.76.22.6!wiki gridwiki
+srv tcp!45.76.22.6!wiki wiki
+srv tcp!45.63.75.148!564 gridroot
+srv tcp!45.76.231.117!9996 gridram
+#srv tcp!107.191.50.176!9997 gridchat
+srv tcp!107.191.50.176!9997 chat
+#srv tcp!107.191.50.176!9998 gridplumber
+srv tcp!107.191.50.176!9998 plumb
+srv tcp!107.191.50.176!7675 pubregistry
+srv tcp!45.63.75.148!9564 griddisk
+
+# Fuse mount all the successful connections
+for(f in $srvfiles){
+	if(test -e $NAMESPACE/$f){
+		if(!test -e $FUSEDIR/$f){
+			mkdir $FUSEDIR/$f
+		}
+		9pfuse $NAMESPACE/$f $FUSEDIR/$f
+	}
+}
+
