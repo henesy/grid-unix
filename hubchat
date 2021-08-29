@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # You'll need to install plan9port https://github.com/9fans/plan9port
 
-echo "++JOIN" $USER "from UNIX™!++" | 9p -a 'tcp!107.191.50.176!9997' write chat
-9p -a 'tcp!107.191.50.176!9997' read chat &
+echo "++JOIN" $USER "from UNIX™!++" | 9p -a 'tcp!chat.9p.zone!9990' write chat
+9p -a 'tcp!chat.9p.zone!9990' read chat &
 while read l; do
 	echo $LOGNAME : "$l"
-done | 9p -a 'tcp!107.191.50.176!9997' write chat
+done | 9p -a 'tcp!chat.9p.zone!9990' write chat
 

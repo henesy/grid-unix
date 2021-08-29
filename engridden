@@ -12,7 +12,7 @@ case *;
 }
 
 NAMESPACE = `{namespace}
-srvfiles = (registry pubregistry gridwiki wiki gridroot gridram chat gridchat plumb gridplumber griddisk)
+srvfiles = (chat sirjofripub registry 9gridchan_registry)
 
 # Delete any stale files, TODO — should prompt
 for(f in $srvfiles){
@@ -33,22 +33,16 @@ plumber
 rm $NAMESPACE/plumb
 
 # Connect all the services
-srv tcp!107.191.50.176!6675 registry
-#srv tcp!45.76.22.6!wiki gridwiki
-srv tcp!45.76.22.6!wiki wiki
-srv tcp!45.63.75.148!564 gridroot
-srv tcp!45.76.231.117!9996 gridram
-#srv tcp!107.191.50.176!9997 gridchat
-srv tcp!107.191.50.176!9997 chat
-#srv tcp!107.191.50.176!9998 gridplumber
-srv tcp!107.191.50.176!9998 plumb
-srv tcp!107.191.50.176!7675 pubregistry
-srv tcp!45.63.75.148!9564 griddisk
+srv 'tcp!chat.9p.zone!9990' chat
+srv 'tcp!oat.nine.sirjofri.de!564' 'sirjofripub'
+srv 'tcp!registry.9gridchan.org!6675' '9gridchan_registry'
+srv 'tcp!registry.9p.zone!6675' 'registry'
+# srv tcp!registry.demo.metacoma.io!30099 '9minegrid_registry'
 
 # Fuse mount all the successful connections
 for(f in $srvfiles){
 	if(test -e $NAMESPACE/$f){
-		if(!test -e $FUSEDIR/$f){
+		if(! test -e $FUSEDIR/$f){
 			mkdir $FUSEDIR/$f
 		}
 		9pfuse $NAMESPACE/$f $FUSEDIR/$f
